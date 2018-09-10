@@ -31,3 +31,20 @@ def classify(inX,dataSet,lables,k):
         classCount[voteIlable] = classCount.get(voteIlable,0) + 1	
     sortedClassCount = sorted(classCount.iteritems(),key = operator.itemgetter(1),reverse = True)
     return sortedClassCount[0][0]
+
+#读取文本数据，转换为Numpy
+def file2matrix(filename):
+    fr = open(filename)
+    arrayOLines = fr.readlines()        
+    numberOfLines = len(arrayOLines)
+    returnMat = zeros((numberOfLines,3))    #初始化矩阵，规模(可随数据进行相应修改)为numberOfLines行，3列
+    classLabelVector = []           #保存类型
+    index = 0
+    #解析文本数据
+    for line in arrayOLines:
+        line = line.strip()         #截取掉回车符
+        listFromLine = line.split("\t")     
+        returnMat[index,:] = listFromLine[0:3]
+        classLabelVector.append(int(listFromLine[-1]))
+        index += 1
+    return returnMat,classLabelVector
