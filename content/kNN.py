@@ -48,3 +48,19 @@ def file2matrix(filename):
         classLabelVector.append(int(listFromLine[-1]))
         index += 1
     return returnMat,classLabelVector
+
+#归一化特征,平衡各项参数的权重,返回归一化后的矩阵，各项参数的范围及最小值
+#归一化公式为 newValue = (oldValue - min) / (max - min)
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)        #数据中的最小值为1 x 3的矩,.min(0),参数0表示按列求最小值
+    maxVals= dataSet.max(0)
+    ranges = maxVals - minVals
+    normDataSet = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    normDataSet = dataSet - tile(minVals,(m,1))
+    normDataSet = normDataSet / tile(ranges,(m,1))
+    return normDataSet,ranges,minVals
+
+#测试函数，用于检测模块是否被装载
+def test():
+    print("test is ok")
