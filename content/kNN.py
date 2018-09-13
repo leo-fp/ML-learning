@@ -32,7 +32,7 @@ def classify(inX,dataSet,lables,k):
     sortedClassCount = sorted(classCount.iteritems(),key = operator.itemgetter(1),reverse = True)
     return sortedClassCount[0][0]
 
-#读取文本数据，转换为Numpy
+#读取文本数据，转换为Numpy,返回特诊向量矩阵和类型矩阵
 def file2matrix(filename):
     fr = open(filename)
     arrayOLines = fr.readlines()        
@@ -61,6 +61,23 @@ def autoNorm(dataSet):
     normDataSet = normDataSet / tile(ranges,(m,1))
     return normDataSet,ranges,minVals
 
+#分类器测试代码,将所哟数据归一化，取一定比例的样本做测试，将预测类型与原本的类型做比较，统计正确率
+def datingClassTest():
+    hoRatio = 0.10          #测试样例在所有数据中的占比
+    datingDataMat,datingLabels = file2matrix("E:\datingTestSet2.txt")
+    normMat,ranges,minVals = autoNorm(datingDataMat)
+    m = normMat.shape[0]    #行数
+    numTestVecs = int(m * hoRatio)  #预测样本的规模
+    errorCount = 0.0        
+    for i in range(numTestVecs):
+        classifierResult = classify(normMat[i,:],normMat[numTestVecs:m,:],\
+                                   datingLabels[numTestVecs:m],3)
+        print "the classifier came back with: %d, the real answer is : %d"\
+            % (classifierResult,datingLabels[i])
+        if(classifierResult != datingLabels[i]): errorCount += 1.0
+    print "the total error rate is: %f" %(errorCount / float(numTestVecs))
+
 #测试函数，用于检测模块是否被装载
 def test():
     print("test is ok")
+
