@@ -32,7 +32,7 @@ def classify(inX,dataSet,lables,k):
     sortedClassCount = sorted(classCount.iteritems(),key = operator.itemgetter(1),reverse = True)
     return sortedClassCount[0][0]
 
-#读取文本数据，转换为Numpy,返回特诊向量矩阵和类型矩阵
+#读取文本数据(针对约会网站)，转换为Numpy,返回特诊向量矩阵和类型矩阵
 def file2matrix(filename):
     fr = open(filename)
     arrayOLines = fr.readlines()        
@@ -80,4 +80,17 @@ def datingClassTest():
 #测试函数，用于检测模块是否被装载
 def test():
     print("test is ok")
+
+#约会网站测试函数,输入特征向量，调用classify预测分类
+def classifyPerson():
+    resultList = ["not at all","in small doses","in large doses"]
+    percentTats = float(raw_input("percentage of time spent playing video games?"))
+    ffMiles = float(raw_input("frequent flier miles earned per year?"))
+    iceCream = float(raw_input("liters of ice cream consumed per year?"))
+    datingDataMat,datingLabels = file2matrix("E:\datingTestSet2.txt")
+    normMat,ranges,minVals = autoNorm(datingDataMat)
+    inArr = array([ffMiles,percentTats,iceCream])
+    classifierResult = classify((inArr - minVals) / ranges,normMat,datingLabels,3)
+    print "You will probably like this person: ",resultList[classifierResult - 1]
+
 
