@@ -30,3 +30,43 @@ def createDataSet():
                [0,1,'no']]
     labels = ["no surfacing","flippers"]
     return dataSet,labels
+
+#划分数据集，dataSet：数据集 axis：特征标号 value：特征值
+#返回value为axis的数据集(刨除axis号特征)
+def splitDataSet(dataSet,axis,value):
+    retDataSet = []
+    #遍历数据集，将axis号特征为value的数据项处理后返回
+    for featVec in dataSet:
+        if featVec[axis] == value:
+           reducedFeatVec = featVec[:axis]
+           reducedFeatVec.extend(featVec[axis + 1:])
+           retDataSet.append(reducedFeatVec)
+    return retDataSet
+
+#选取最适合分割的特征
+def chooseBestFeatureToSplit(dataSet):
+    numFeatures = len(dataSet[0]) - 1
+    baseEntropy = calcShannonEnt(dataSet)
+    bestInfoGain = 0.0;
+    bestFeature = -1
+    for i in range(numFeatures):
+        featList = [example[i] for example in dataSet]
+        uniqueVals = set(featList)
+        newEntropy = 0.0
+        for value in uniqueVals:
+            subDataSet = splitDataSet(dataSet,i,value)
+            prob = len(subDataSet) / float(len(dataSet))
+            newEntropy += prob * calcShannonEnt(subDataSet)
+        infoGain = baseEntropy - newEntropy
+        if(infoGain > bestInfoGain):
+            bestInfoGain = infoGain
+            bestFeature = i
+    return bestFeature
+
+def majorityCnt(classList):
+    classCount = {}
+    for vote in classList:
+        if vote not in classCount.keys(): classCount[vote] = 0
+        classCount[vote] += 1
+    sortedClassCount = sorted(classCount.iteritems(),key=operator.itemgetter(1),reverse = True)
+    return sortedClassCount[0][0]
