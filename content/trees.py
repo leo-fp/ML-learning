@@ -43,10 +43,10 @@ def splitDataSet(dataSet,axis,value):
            retDataSet.append(reducedFeatVec)
     return retDataSet
 
-#选取最适合分割的特征
+#计算每个特征分割后的熵，返回最佳特征
 def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1
-    baseEntropy = calcShannonEnt(dataSet)
+    baseEntropy = calcShannonEnt(dataSet)   #原始熵
     bestInfoGain = 0.0;
     bestFeature = -1
     for i in range(numFeatures):
@@ -63,6 +63,7 @@ def chooseBestFeatureToSplit(dataSet):
             bestFeature = i
     return bestFeature
 
+#返回类别列表中出现次数最多的值
 def majorityCnt(classList):
     classCount = {}
     for vote in classList:
@@ -70,3 +71,27 @@ def majorityCnt(classList):
         classCount[vote] += 1
     sortedClassCount = sorted(classCount.iteritems(),key=operator.itemgetter(1),reverse = True)
     return sortedClassCount[0][0]
+
+#创建树
+def createTree(dataSet,labels):
+    #保存所有类别
+    classList = [example[-1] for example in dataSet]
+    #当前数据集中所有类型相同,直接返回
+    if classList.count(classList[0]) == len(classList):
+        return classList[0]
+    #用完所有特征后，无法得到同意的类别，调用majorityCnt返回出现次数最多的类别
+    if len(dataSet[0]) == 1:
+        return majorityCnt(classList)
+    #bestFeat:最佳分割特征编号
+    bestFeat = chooseBestFeatureToSplit(dataSet)
+    bestFeatLabel = labels[bestFeat]
+    myTree = {bestFeatLabel:{}}
+    del(labels[bestFeat])
+    featValues = [example[bestFeat] for example in dataSet]
+    uniqueVals = set(featValues)
+    for value in uniqueVals:
+        #消除labels[bestFeat]后复制给subLabels
+        subLabels = labels[:]
+        #递归创建树
+        myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet,bestFeat,value),subLabels)
+    return myTree
