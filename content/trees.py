@@ -85,7 +85,9 @@ def createTree(dataSet,labels):
     #bestFeat:最佳分割特征编号
     bestFeat = chooseBestFeatureToSplit(dataSet)
     bestFeatLabel = labels[bestFeat]
+    #创建当前数据集的字典
     myTree = {bestFeatLabel:{}}
+    #删除类别列表中对最佳特征的引用
     del(labels[bestFeat])
     featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
