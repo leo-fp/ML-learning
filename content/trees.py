@@ -88,6 +88,7 @@ def createTree(dataSet,labels):
     #创建当前数据集的字典
     myTree = {bestFeatLabel:{}}
     #删除类别列表中对最佳特征的引用
+    #这一句会使特征标签的数量减少，在调用classify时会出现not in list错误
     del(labels[bestFeat])
     featValues = [example[bestFeat] for example in dataSet]
     uniqueVals = set(featValues)
@@ -97,3 +98,24 @@ def createTree(dataSet,labels):
         #递归创建树
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet,bestFeat,value),subLabels)
     return myTree
+
+#分类
+"""
+inputTree:创建好的树
+featValues:特征标签
+testVec:输入样例
+
+return:预测类别
+
+ps:调动该函数时确保featValues的数量正确
+"""
+def classify(inputTree,featLabels,testVec):
+    firstStr = inputTree.keys()[0]
+    secondDict = inputTree[firstStr]
+    featIndex = featLabels.index(firstStr)
+    for key in secondDict.keys():
+        if testVec[featIndex] == key:
+            if type(secondDict[key]).__name__=="dict":
+                classLabel = classify(secondDict[key],featLabels,testVec)
+            else: classLabel = secondDict[key]
+    return classLabel
