@@ -119,3 +119,17 @@ def classify(inputTree,featLabels,testVec):
                 classLabel = classify(secondDict[key],featLabels,testVec)
             else: classLabel = secondDict[key]
     return classLabel
+
+#决策树的创建很耗时，可以将决策树存在磁盘上，使用时直接从磁盘上读取
+#将决策树存入磁盘
+def storeTree(inputTree,filename):
+    import pickle
+    fw = open(filename,"w")
+    pickle.dump(inputTree,fw)
+    fw.close()
+    
+#从磁盘取出决策树
+def grabTree(filename):
+    import pickle
+    fr = open(filename)
+    return pickle.load(fr)
