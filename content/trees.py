@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Sep 15 23:21:34 2018
-决策树
+决策树:
+    不断的在所有特征中选取最佳特征(以香农熵为指标)将数据划分为树型结构,
+    在进行分类时，按照决策树分类(类似于流程图)
 @author: Administrator
 """
 
@@ -99,7 +101,7 @@ def createTree(dataSet,labels):
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet,bestFeat,value),subLabels)
     return myTree
 
-#分类
+#分类。从根节点开始，找当前特征的值所对应的分支，如果是叶子节点直接返回，如果是树则递归，直到叶子节点为止
 """
 inputTree:创建好的树
 featValues:特征标签
