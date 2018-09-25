@@ -66,3 +66,32 @@ def trainNB0(trainMatrix,trainCategory):
     p1Vect = p1Num / p1Denom
     p0Vect = p0Num / p0Denom
     return p0Vect,p1Vect,pAbusive
+
+#朴素贝叶斯分类函数
+#vec2Classify:待分类文档的向量
+#p0Vec:类别0的特征向量
+#pClass1:类别1的概率，在贝叶斯公式中做分布使用
+#通过将待分类的文档的向量和每种类别的特征向量进行对应位置的乘法，
+#效果表现为高频词汇位置的值会更大，最后将向量求和，以和更大的类别作为预测类型
+def classifyNB(vec2Classify,p0Vec,p1Vec,pClass1):
+    p1 = sum(vec2Classify * p1Vec) + math.log(pClass1)
+    p0 = sum(vec2Classify * p0Vec) + math.log(1.0 - pClass1)
+    if p1 > p0:
+        return 1
+    else:
+        return 0
+    
+#测试函数
+def testingNB():
+    listOPosts,listClasses = loadDataSet()
+    myVocabList = createVocabList(listOPosts)
+    trainMat = []
+    for postinDoc in listOPosts:
+        trainMat.append(setOfWords2Vec(myVocabList,postinDoc))
+    p0V,p1V,pAb = trainNB0(np.array(trainMat),np.array(listClasses))
+    testEntry = ['love','my','dalmation']
+    thisDoc = np.array(setOfWords2Vec(myVocabList,testEntry))
+    print testEntry,'classified as: ',classifyNB(thisDoc,p0V,p1V,pAb)
+    testEntry = ['stupid','garbage']
+    thisDoc = np.array(setOfWords2Vec(myVocabList,testEntry))
+    print testEntry,'classified as: ',classifyNB(thisDoc,p0V,p1V,pAb)
