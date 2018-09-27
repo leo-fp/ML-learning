@@ -95,3 +95,14 @@ def testingNB():
     testEntry = ['stupid','garbage']
     thisDoc = np.array(setOfWords2Vec(myVocabList,testEntry))
     print testEntry,'classified as: ',classifyNB(thisDoc,p0V,p1V,pAb)
+
+#朴素贝叶斯词袋模型
+#vocabList:词汇表
+#inputSet:输入
+#return：输入词汇的统计结果向量，而不是出现置为1，不出现为0
+def bagOfWords2VecMN(vocabList,inputSet):
+    returnVec = [0] * len(vocabList)
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] += 1
+    return returnVec
