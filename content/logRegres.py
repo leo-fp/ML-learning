@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Sep 28 21:24:32 2018
-Logistic回归
+Logistic回归:
+   不断的调整Sigmoid函数的最佳拟合参数
 @author: Administrator
 """
 import math
@@ -68,3 +69,23 @@ def plotBestFit(wei):
     ax.plot(x,y)
     plt.xlabel("x1");plt.ylabel("x2");
     plt.show()
+
+#改进的随机梯度上身算法
+def stocGradAscent1(dataMatrix,classLabels,numIter = 150):
+    m,n = np.shape(dataMatrix)
+    weights = np.ones(n)
+    for j in range(numIter): 
+        for i in range(m):
+            alpha = 4 / (1.0 + j + i) + 0.01
+            randIndex = int(np.random.uniform(0,len(dataMatrix)))
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights = weights + alpha * error * dataMatrix[randIndex]
+    return weights
+
+#Logistic回归分类函数
+#用调整好的参数与输入数据相乘，大于0.5预测类别为1，否则为0
+def classifyVector(inX,weights):
+    prob = sigmoid(sum(inX * weights))
+    if prob > 0.5: return 1.0
+    else: return 0.0
